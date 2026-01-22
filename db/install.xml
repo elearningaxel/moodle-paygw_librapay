@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="payment/gateway/librapay/db" VERSION="20260122" COMMENT="XMLDB file for LibraPay payment gateway plugin"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="paygw_librapay_transactions" COMMENT="Stores LibraPay transaction records">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="orderid" TYPE="char" LENGTH="19" NOTNULL="true" SEQUENCE="false" COMMENT="LibraPay ORDER number"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="component" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="paymentarea" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="itemid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="amount" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="2"/>
+        <FIELD NAME="currency" TYPE="char" LENGTH="3" NOTNULL="true" DEFAULT="RON" SEQUENCE="false"/>
+        <FIELD NAME="action" TYPE="char" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="0=approved, 1=duplicate, 2=denied, 3=error"/>
+        <FIELD NAME="rc" TYPE="char" LENGTH="3" NOTNULL="false" SEQUENCE="false" COMMENT="ISO8583 response code"/>
+        <FIELD NAME="message" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Response message"/>
+        <FIELD NAME="rrn" TYPE="char" LENGTH="12" NOTNULL="false" SEQUENCE="false" COMMENT="Reference Retrieval Number"/>
+        <FIELD NAME="intref" TYPE="char" LENGTH="16" NOTNULL="false" SEQUENCE="false" COMMENT="Internal reference"/>
+        <FIELD NAME="approval" TYPE="char" LENGTH="6" NOTNULL="false" SEQUENCE="false" COMMENT="Authorization code"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="10" NOTNULL="true" DEFAULT="pending" SEQUENCE="false" COMMENT="pending, completed, failed"/>
+        <FIELD NAME="token" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false" COMMENT="Verification token for callback"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="orderid" UNIQUE="true" FIELDS="orderid"/>
+        <INDEX NAME="component_paymentarea_itemid" UNIQUE="false" FIELDS="component, paymentarea, itemid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
