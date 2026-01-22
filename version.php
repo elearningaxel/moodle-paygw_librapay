@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026012202;
+$plugin->version   = 2026012203;
 $plugin->release   = '1.0';
 $plugin->requires  = 2022112809;
 $plugin->component = 'paygw_librapay';
