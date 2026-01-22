@@ -33,7 +33,6 @@ use core_payment\form\account_gateway;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gateway extends \core_payment\gateway {
-
     /**
      * Returns the list of currencies supported by LibraPay.
      * LibraPay only supports RON (Romanian Leu).

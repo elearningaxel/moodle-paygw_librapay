@@ -54,9 +54,11 @@ foreach ($responsefields as $field) {
 
 // Verify we have the minimum required response fields.
 // Note: Cannot use empty() for ACTION because '0' means approved and empty('0') returns true.
-if (!isset($response['ORDER']) || $response['ORDER'] === '' ||
+if (
+    !isset($response['ORDER']) || $response['ORDER'] === '' ||
     !isset($response['ACTION']) || $response['ACTION'] === '' ||
-    !isset($response['P_SIGN']) || $response['P_SIGN'] === '') {
+    !isset($response['P_SIGN']) || $response['P_SIGN'] === ''
+) {
     redirect(
         new moodle_url('/'),
         get_string('invalidresponse', 'paygw_librapay'),

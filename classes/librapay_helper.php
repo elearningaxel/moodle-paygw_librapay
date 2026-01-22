@@ -33,7 +33,6 @@ use core_payment\helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class librapay_helper {
-
     /** @var string Test environment URL */
     const URL_TEST = 'https://merchant.librapay.ro/pay_auth.php';
 
