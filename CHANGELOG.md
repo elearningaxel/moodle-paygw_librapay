@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2026-01-27
+
+### Fixed
+- Fixed coding style issues for Moodle plugin CI
+- Added GitHub Actions CI workflow
+
 ## [1.0.2] - 2026-01-27
 
 ### Fixed
