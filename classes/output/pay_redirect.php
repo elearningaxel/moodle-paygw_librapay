@@ -36,7 +36,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class pay_redirect implements renderable, templatable {
-
     /** @var string LibraPay gateway URL */
     protected $librapayurl;
 
