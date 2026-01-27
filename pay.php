@@ -24,6 +24,7 @@
 
 use core_payment\helper;
 use paygw_librapay\librapay_helper;
+use paygw_librapay\output\pay_redirect;
 
 require_once(__DIR__ . '/../../../config.php');
 
@@ -95,53 +96,28 @@ $DB->insert_record('paygw_librapay_transactions', $pending);
 // Get LibraPay URL.
 $librapayurl = $librapayhelper->get_librapay_url();
 
-// Escape values for HTML output.
-$librapayurlesc = htmlspecialchars($librapayurl);
-$amountesc = htmlspecialchars($amount);
-$orderidesc = htmlspecialchars($orderid);
-$descesc = htmlspecialchars($desc);
-$terminalesc = htmlspecialchars($config->terminal);
-$timestampesc = htmlspecialchars($timestamp);
-$nonceesc = htmlspecialchars($nonce);
-$backrefesc = htmlspecialchars($backref->out(false));
-$datacustomesc = htmlspecialchars($datacustom);
-$psignesc = htmlspecialchars($psign);
+// Set up the page.
+$PAGE->set_context(context_system::instance());
+$PAGE->set_url('/payment/gateway/librapay/pay.php');
+$PAGE->set_pagelayout('redirect');
+$PAGE->set_title(get_string('redirecting', 'paygw_librapay'));
 
-// Get language strings.
-$redirectingstr = get_string('redirecting', 'paygw_librapay');
-$redirectingtolibrapaystr = get_string('redirectingtolibrapay', 'paygw_librapay');
-$noscriptstr = get_string('noscript', 'paygw_librapay');
-$continuetopaymentstr = get_string('continuetopayment', 'paygw_librapay');
+// Create the renderable and output using the template.
+$renderable = new pay_redirect(
+    $librapayurl,
+    $amount,
+    'RON',
+    $orderid,
+    $desc,
+    $config->terminal,
+    $timestamp,
+    $nonce,
+    $backref->out(false),
+    $datacustom,
+    $psign
+);
 
-// Output auto-submit form.
-echo <<<HTML
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>{$redirectingstr}</title>
-</head>
-<body>
-    <p>{$redirectingtolibrapaystr}</p>
-    <form id="librapay_form" method="post" action="{$librapayurlesc}">
-        <input type="hidden" name="AMOUNT" value="{$amountesc}">
-        <input type="hidden" name="CURRENCY" value="RON">
-        <input type="hidden" name="ORDER" value="{$orderidesc}">
-        <input type="hidden" name="DESC" value="{$descesc}">
-        <input type="hidden" name="TERMINAL" value="{$terminalesc}">
-        <input type="hidden" name="TIMESTAMP" value="{$timestampesc}">
-        <input type="hidden" name="NONCE" value="{$nonceesc}">
-        <input type="hidden" name="BACKREF" value="{$backrefesc}">
-        <input type="hidden" name="DATA_CUSTOM" value="{$datacustomesc}">
-        <input type="hidden" name="P_SIGN" value="{$psignesc}">
-        <noscript>
-            <p>{$noscriptstr}</p>
-            <input type="submit" value="{$continuetopaymentstr}">
-        </noscript>
-    </form>
-    <script>
-        document.getElementById('librapay_form').submit();
-    </script>
-</body>
-</html>
-HTML;
+$output = $PAGE->get_renderer('paygw_librapay');
+echo $OUTPUT->header();
+echo $output->render_from_template('paygw_librapay/pay_redirect', $renderable->export_for_template($output));
+echo $OUTPUT->footer();

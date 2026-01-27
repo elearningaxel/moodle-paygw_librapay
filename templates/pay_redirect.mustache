@@ -1,0 +1,79 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template paygw_librapay/pay_redirect
+
+    Template for LibraPay payment redirect form.
+
+    Context variables required for this template:
+    * librapayurl - The LibraPay gateway URL
+    * amount - Payment amount
+    * currency - Currency code (RON)
+    * orderid - Order ID
+    * description - Payment description
+    * terminal - Terminal ID
+    * timestamp - Request timestamp
+    * nonce - Request nonce
+    * backref - Callback URL
+    * datacustom - Custom data field
+    * psign - Request signature
+    * redirectingstr - "Redirecting" string
+    * redirectingtolibrapaystr - "Redirecting to LibraPay" string
+    * noscriptstr - "JavaScript required" string
+    * continuetopaymentstr - "Continue to payment" string
+
+    Example context (json):
+    {
+        "librapayurl": "https://ecclients.btrl.ro/massl/start",
+        "amount": "100.00",
+        "currency": "RON",
+        "orderid": "123456",
+        "description": "Course enrollment",
+        "terminal": "12345678",
+        "timestamp": "20260127120000",
+        "nonce": "abc123",
+        "backref": "https://example.com/payment/gateway/librapay/process.php",
+        "datacustom": "product=Course",
+        "psign": "ABCD1234",
+        "redirectingstr": "Redirecting...",
+        "redirectingtolibrapaystr": "Redirecting to LibraPay for payment...",
+        "noscriptstr": "JavaScript is required. Please click the button below.",
+        "continuetopaymentstr": "Continue to payment"
+    }
+}}
+<div class="paygw_librapay-redirect">
+    <p>{{redirectingtolibrapaystr}}</p>
+    <form id="librapay_form" method="post" action="{{librapayurl}}">
+        <input type="hidden" name="AMOUNT" value="{{amount}}">
+        <input type="hidden" name="CURRENCY" value="{{currency}}">
+        <input type="hidden" name="ORDER" value="{{orderid}}">
+        <input type="hidden" name="DESC" value="{{description}}">
+        <input type="hidden" name="TERMINAL" value="{{terminal}}">
+        <input type="hidden" name="TIMESTAMP" value="{{timestamp}}">
+        <input type="hidden" name="NONCE" value="{{nonce}}">
+        <input type="hidden" name="BACKREF" value="{{backref}}">
+        <input type="hidden" name="DATA_CUSTOM" value="{{datacustom}}">
+        <input type="hidden" name="P_SIGN" value="{{psign}}">
+        <noscript>
+            <p>{{noscriptstr}}</p>
+            <input type="submit" class="btn btn-primary" value="{{continuetopaymentstr}}">
+        </noscript>
+    </form>
+</div>
+{{#js}}
+document.getElementById('librapay_form').submit();
+{{/js}}

@@ -34,21 +34,28 @@ use paygw_librapay\librapay_helper;
 require_once(__DIR__ . '/../../../config.php');
 
 // IPN data comes via POST.
-$response = [];
-$responsefields = [
-    'TERMINAL', 'TRTYPE', 'ORDER', 'AMOUNT', 'CURRENCY', 'DESC',
-    'ACTION', 'RC', 'MESSAGE', 'RRN', 'INT_REF', 'APPROVAL',
-    'TIMESTAMP', 'NONCE', 'P_SIGN',
+// Use optional_param() to safely retrieve and sanitize all response fields.
+$response = [
+    'TERMINAL' => optional_param('TERMINAL', '', PARAM_ALPHANUMEXT),
+    'TRTYPE' => optional_param('TRTYPE', '', PARAM_ALPHANUMEXT),
+    'ORDER' => optional_param('ORDER', '', PARAM_ALPHANUMEXT),
+    'AMOUNT' => optional_param('AMOUNT', '', PARAM_RAW),
+    'CURRENCY' => optional_param('CURRENCY', '', PARAM_ALPHA),
+    'DESC' => optional_param('DESC', '', PARAM_TEXT),
+    'ACTION' => optional_param('ACTION', null, PARAM_RAW),
+    'RC' => optional_param('RC', '', PARAM_ALPHANUMEXT),
+    'MESSAGE' => optional_param('MESSAGE', '', PARAM_TEXT),
+    'RRN' => optional_param('RRN', '', PARAM_ALPHANUMEXT),
+    'INT_REF' => optional_param('INT_REF', '', PARAM_ALPHANUMEXT),
+    'APPROVAL' => optional_param('APPROVAL', '', PARAM_ALPHANUMEXT),
+    'TIMESTAMP' => optional_param('TIMESTAMP', '', PARAM_ALPHANUMEXT),
+    'NONCE' => optional_param('NONCE', '', PARAM_ALPHANUMEXT),
+    'P_SIGN' => optional_param('P_SIGN', '', PARAM_ALPHANUMEXT),
 ];
 
-foreach ($responsefields as $field) {
-    if (isset($_POST[$field])) {
-        $response[$field] = $_POST[$field];
-    }
-}
-
 // Verify minimum required fields.
-if (empty($response['ORDER']) || empty($response['ACTION']) || empty($response['P_SIGN'])) {
+// Note: Cannot use empty() for ACTION because '0' means approved and empty('0') returns true.
+if ($response['ORDER'] === '' || $response['ACTION'] === null || $response['ACTION'] === '' || $response['P_SIGN'] === '') {
     // Invalid request - but don't echo "1" so LibraPay retries.
     http_response_code(400);
     exit;
